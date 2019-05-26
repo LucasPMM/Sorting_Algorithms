@@ -1,0 +1,5 @@
+sort
+.vscode
+in.txt
+out.txt
+valgrind-out.txt
