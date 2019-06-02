@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "includes/functions.h"
+#include "includes/funcoes.h"
+#include "includes/pilha.h"
 
 int main(int argc, char *argv[]){
 	int arr[] = { 12, 11, 13, 5, 6 }; 
