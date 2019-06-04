@@ -15,10 +15,10 @@ typedef struct {
     int tamanho;
 } Pilha;
  
-int Desempilha (Pilha *p, Item *item);
+void Desempilha (Pilha *p, Item *item);
 int Vazia (Pilha *p);
 void FPVazia (Pilha *p);
 void Empilha (Item x, Pilha *p);
 int Tamanho (Pilha *p);
 
-// Implementação de pilhas baseada no método passado durante as aulas!
+// Implementação de pilhas baseada nos slides passados durante as aulas!

@@ -3,3 +3,5 @@ sort
 in.txt
 out.txt
 valgrind-out.txt
+src/teste.sh
+src/out

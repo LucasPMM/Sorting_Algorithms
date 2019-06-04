@@ -2,13 +2,9 @@
 #include <stdlib.h>
 #include "includes/pilha.h"
 
-int Tamanho (Pilha *p) {
-    return p->tamanho;
-}
+int Tamanho (Pilha *p) { return p->tamanho; }
 
-int Vazia (Pilha *p) {
-    return p->topo == p->fundo;
-}
+int Vazia (Pilha *p) { return p->topo == p->fundo; }
 
 void FPVazia (Pilha *p) {
     p->topo = (Apontador) malloc(sizeof(Celula));

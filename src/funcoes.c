@@ -79,16 +79,16 @@ long Ordena (int esq, int dir, int *A, int tipo, long *numeroTrocas, int condica
 		if (tipo == 2 && esq - dir <= 2) { tipo = 0; }
 		numeroComparacoes = Particao(esq, dir, &i, &j, A, tipo, numeroTrocas);
 		if (esq < j) {
-			numeroComparacoes += Ordena(esq, j, A, tipo, numeroTrocas, NULL);
+			numeroComparacoes += Ordena(esq, j, A, tipo, numeroTrocas, 0);
 		}
 		if (i < dir) {
-			numeroComparacoes += Ordena(i, dir, A, tipo, numeroTrocas, NULL);
+			numeroComparacoes += Ordena(i, dir, A, tipo, numeroTrocas, 0);
 		}
 	} else { // Aplica o insertionsort após a condição de parada
 		if (dir - esq > condicaoParada) {
 			if (tipo == 2 && dir - esq <= 2) { tipo = 0; }
-			if (dir - esq > 2) { numeroComparacoes = Particao(esq, dir, &i, &j, A, numeroTrocas, tipo); }
-			else { numeroComparacoes = Particao(esq, dir, &i, &j, A, numeroTrocas, tipo); }
+			if (dir - esq > 2) { numeroComparacoes = Particao(esq, dir, &i, &j, A, tipo, numeroTrocas); }
+			else { numeroComparacoes = Particao(esq, dir, &i, &j, A, tipo, numeroTrocas); }
 
 			numeroComparacoes += Ordena(esq, j, A, tipo, numeroTrocas, condicaoParada);
 			numeroComparacoes += Ordena(i, dir, A, tipo, numeroTrocas, condicaoParada);
@@ -104,11 +104,11 @@ long Ordena (int esq, int dir, int *A, int tipo, long *numeroTrocas, int condica
 long QuickSortContainer(int *A, int numeroElementos, char *tipo, long *numeroTrocas) {
     long int numeroComparacoes = 0;
     if (!strcmp(tipo, "QC")) {
-        numeroComparacoes = Ordena(0, numeroElementos-1, A, 0, numeroTrocas, NULL);
+        numeroComparacoes = Ordena(0, numeroElementos-1, A, 0, numeroTrocas, 0);
     } else if (!strcmp(tipo, "QM3")) {
-        numeroComparacoes = Ordena(0, numeroElementos-1, A, 2, numeroTrocas, NULL);
+        numeroComparacoes = Ordena(0, numeroElementos-1, A, 2, numeroTrocas, 0);
     } else if(!strcmp(tipo, "QPE")) {
-        numeroComparacoes = Ordena(0, numeroElementos-1, A, 1, numeroTrocas, NULL);
+        numeroComparacoes = Ordena(0, numeroElementos-1, A, 1, numeroTrocas, 0);
     } else if(!strcmp(tipo, "QI1")) {
         numeroComparacoes = Ordena(0, numeroElementos-1, A, 2, numeroTrocas, numeroElementos/100);
     } else if(!strcmp(tipo, "QI5")) {
@@ -121,7 +121,7 @@ long QuickSortContainer(int *A, int numeroElementos, char *tipo, long *numeroTro
     return numeroComparacoes;
 }
 
-long QuickSortNaoRec (int *A, int tamanho, long *swap) {
+long QuickSortNaoRec (int *A, int tamanho, long *numeroTrocas) {
     int esq = 0, dir = tamanho - 1, i, j;
     long numeroComparacoes = 0;
     Pilha p;
@@ -135,7 +135,7 @@ long QuickSortNaoRec (int *A, int tamanho, long *swap) {
     Empilha(item, &p);
     do {
         if (dir > esq) {
-            numeroComparacoes += Particao(esq, dir, &i, &j, A, swap, 0);
+            numeroComparacoes += Particao(esq, dir, &i, &j, A, 0, numeroTrocas);
             if (j - esq > dir - i) {
                 item.dir = j;
                 item.esq = esq;
