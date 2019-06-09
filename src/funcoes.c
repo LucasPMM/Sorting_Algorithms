@@ -30,9 +30,10 @@ long InsertionSort (int *arr, int esq, int dir, long *numeroTrocas) {
 			if (chave >= arr[j]) { break; } 
 			arr[j + 1] = arr[j]; 
 			(*numeroTrocas)++;
-			j = j - 1;
+			j--;
 		} 
-		arr[j + 1] = chave; 
+		arr[j + 1] = chave;
+		(*numeroTrocas)++;
 	}
 	return numeroComparacoes;
 	// Implementação baseada nos slides da matéria! 
@@ -63,7 +64,7 @@ int Particao (int esq, int dir, int *i, int *j, int *A, int tipo, long *numeroTr
 
 			(*i)++;
 			(*j)--;
-			(*numeroTrocas)++;
+			(*numeroTrocas)++; // Troca um elemento com outro
 		}
  	} while (*i <= *j);
 
@@ -72,7 +73,7 @@ int Particao (int esq, int dir, int *i, int *j, int *A, int tipo, long *numeroTr
 }
 
 long Ordena (int esq, int dir, int *A, int tipo, long *numeroTrocas, int condicaoParada) {
-	long int numeroComparacoes = 0;
+	long int numeroComparacoes;
 	int i, j;
 
 	if (!condicaoParada) { // Aplica o quicksort para todo o vetor
@@ -104,17 +105,17 @@ long Ordena (int esq, int dir, int *A, int tipo, long *numeroTrocas, int condica
 long QuickSortContainer(int *A, int numeroElementos, char *tipo, long *numeroTrocas) {
     long int numeroComparacoes = 0;
     if (!strcmp(tipo, "QC")) {
-        numeroComparacoes = Ordena(0, numeroElementos-1, A, 0, numeroTrocas, 0);
+        numeroComparacoes = Ordena(0, numeroElementos, A, 0, numeroTrocas, 0);
     } else if (!strcmp(tipo, "QM3")) {
-        numeroComparacoes = Ordena(0, numeroElementos-1, A, 2, numeroTrocas, 0);
+        numeroComparacoes = Ordena(0, numeroElementos, A, 2, numeroTrocas, 0);
     } else if(!strcmp(tipo, "QPE")) {
-        numeroComparacoes = Ordena(0, numeroElementos-1, A, 1, numeroTrocas, 0);
+        numeroComparacoes = Ordena(0, numeroElementos, A, 1, numeroTrocas, 0);
     } else if(!strcmp(tipo, "QI1")) {
-        numeroComparacoes = Ordena(0, numeroElementos-1, A, 2, numeroTrocas, numeroElementos/100);
+        numeroComparacoes = Ordena(0, numeroElementos, A, 2, numeroTrocas, numeroElementos/100);
     } else if(!strcmp(tipo, "QI5")) {
-        numeroComparacoes = Ordena(0, numeroElementos-1, A, 2, numeroTrocas, numeroElementos/20);
+        numeroComparacoes = Ordena(0, numeroElementos, A, 2, numeroTrocas, numeroElementos/20);
     } else if(!strcmp(tipo, "QI10")) {
-        numeroComparacoes = Ordena(0, numeroElementos-1, A, 2, numeroTrocas, numeroElementos/10);
+        numeroComparacoes = Ordena(0, numeroElementos, A, 2, numeroTrocas, numeroElementos/10);
     } else if(!strcmp(tipo, "QNR")){
         numeroComparacoes = QuickSortNaoRec(A, numeroElementos, numeroTrocas);
     }

@@ -5,7 +5,7 @@
 #include "includes/funcoes.h"
 #include "includes/pilha.h"
 
-#define N_TESTES 2
+#define N_TESTES 20
 
 void imprime (int *A, int tamanho) {
     int i = 0;
@@ -30,7 +30,9 @@ int **geraArrayDecrescente (int tamanho) {
     A = (int**) calloc(N_TESTES, sizeof(int*));
     for (i = 0; i < N_TESTES; i++) {
         A[i] = (int*) calloc(tamanho, sizeof(int));
-        for (j = 0; j < tamanho; j++) { A[i][j] = tamanho - j; }
+        for (j = 0; j < tamanho; j++) {
+            A[i][j] = tamanho - j;
+        }
     }
     return A;
 }
@@ -47,20 +49,22 @@ int **geraArrayAleatorio (int tamanho) {
 
 int initSort (int argc, char *argv[]) {
     struct timespec start, end;
-    long *elapsed_time, numeroTrocasTotal;
+    int *elapsed_time;
     double comparacoesTotais = 0.0;
-    int **A, **B, i, j, tamanho, imprimirArray = 0;
-    char *tipoOrdenacao, *organizacaoVetor;
+    int numeroTrocasTotal = 0, **A, **B, i, j, tamanho, imprimirArray = 0, tmpMedio = 0;
+    char *tipoOrdenacao;    // QC | QM3 | QPE | QI1 | QI5 | QI10 | QNR
+    char *organizacaoVetor; // OrdC | OrdD | Ale
 
+    // Pegando os parâmetros do argv:
     tipoOrdenacao = (char*) malloc(sizeof(char));
     organizacaoVetor = (char*) malloc(sizeof(char));
     tamanho = atoi(argv[3]);
     strcpy(tipoOrdenacao, argv[1]);
     strcpy(organizacaoVetor, argv[2]);
 
-    elapsed_time = (long*) calloc(N_TESTES, sizeof(long));
+    elapsed_time = (int*) malloc(N_TESTES * sizeof(int));
 
-    // Gerando 20 arrays para pegar a mediana de tempo
+    // Gerando N_TESTES arrays para pegar a mediana de tempo
     if (strcmp(organizacaoVetor, "OrdC") == 0) { A = geraArrayCrescente(tamanho); }
     if (strcmp(organizacaoVetor, "OrdD") == 0) { A = geraArrayDecrescente(tamanho); }
     if (strcmp(organizacaoVetor, "Ale") == 0) {  A = geraArrayAleatorio(tamanho); }
@@ -77,32 +81,39 @@ int initSort (int argc, char *argv[]) {
         }
     }
 
-    long nTrocas;
-    numeroTrocasTotal = 0;
-    for (int i = 0; i < N_TESTES; i++) {
+    // Implementação do calculo de tempo seguindo a documentação disponibilizada no Apendice da descrição do trabalho
+    double nTrocas = 0.0;
+    for (i = 0; i < N_TESTES; i++) {
         clock_gettime(CLOCK_REALTIME, &start);
         
-        comparacoesTotais += QuickSortContainer(A[i], tamanho, tipoOrdenacao, &numeroTrocasTotal)/(double)N_TESTES;
+        comparacoesTotais += QuickSortContainer(A[i], tamanho - 1, tipoOrdenacao, &numeroTrocasTotal)/(double)N_TESTES;
         nTrocas += numeroTrocasTotal/(double)N_TESTES;
         numeroTrocasTotal = 0;
         
         clock_gettime(CLOCK_REALTIME, &end);
-        elapsed_time[i] = 1.e+6 * (double) (end.tv_sec - start.tv_sec) 
-                        + 1.e-3 * (double) (end.tv_nsec - start.tv_nsec);
+        elapsed_time[i] = 1.e+6 * (double) (end.tv_sec - start.tv_sec) + 1.e-3 * (double) (end.tv_nsec - start.tv_nsec);
     }
     numeroTrocasTotal = (long)nTrocas;
     
     QuickSortContainer(elapsed_time, N_TESTES, "QC", &nTrocas);
-    int tmpMedio = (elapsed_time[N_TESTES/2] + elapsed_time[(N_TESTES/2) - 1])/2;
+    tmpMedio = (elapsed_time[N_TESTES/2] + elapsed_time[(N_TESTES/2) - 1])/2;
     
-    printf("%s %s %d %.0lf %ld %d\n", tipoOrdenacao, organizacaoVetor, tamanho,comparacoesTotais, numeroTrocasTotal, tmpMedio);
+    // Impressões de resultados
+    printf("%s ", tipoOrdenacao);   // QC | QM3 | QPE | QI1 | QI5 | QI10 | QNR
+    printf("%s ", organizacaoVetor);    // OrdC | OrdD | Ale
+    printf("%d ", tamanho);     // 50000 | 100000 | 150000 | 200000 | 250000 | 300000 | 350000 | 400000 | 450000 | 500000
+    printf("%.0lf ", comparacoesTotais);
+    printf("%d ", numeroTrocasTotal);
+    printf("%d\n", tmpMedio);
 
+    // Imprimir o vertor utilizado caso tenha entrado com '-p'
     if (imprimirArray == 1) {
         for (i = 0; i < N_TESTES; i++) {
-            imprime(A[i], tamanho);
+            imprime(B[i], tamanho);
         }
     }
 
+    // Liberar a memória alocada
     for (i = 0; i < N_TESTES; i++) {
         free(A[i]);
         if (imprimirArray == 1) { free(B[i]); }
