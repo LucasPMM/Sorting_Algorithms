@@ -5,8 +5,12 @@
 #include "includes/funcoes.h"
 #include "includes/pilha.h"
 
+// "Variavel global" que determina o número de vetores a serem gerados
+// com o intuito de obter as médias e mediana necessárias
 #define N_TESTES 20
 
+// Função que realiza a impressão dos vetores no final da execução
+// caso o argumento [-p] esteja presente.
 void imprime (int *A, int tamanho) {
     int i = 0;
     for (; i < tamanho; i++) {
@@ -15,6 +19,7 @@ void imprime (int *A, int tamanho) {
     printf("\n");
 }
 
+// Função que gera um array de arrays (matriz) ordenados de forma crescente
 int **geraArrayCrescente (int tamanho) {
     int **A, i, j;
     A = (int**) calloc(N_TESTES, sizeof(int*));
@@ -25,6 +30,7 @@ int **geraArrayCrescente (int tamanho) {
     return A;
 }
 
+// Função que gera um array de arrays (matriz) ordenados de forma decrescente
 int **geraArrayDecrescente (int tamanho) {
     int **A, i, j;
     A = (int**) calloc(N_TESTES, sizeof(int*));
@@ -37,6 +43,7 @@ int **geraArrayDecrescente (int tamanho) {
     return A;
 }
 
+// Função que gera um array de arrays (matriz) ordenados de forma aleatória
 int **geraArrayAleatorio (int tamanho) {
     int **A, i, j;
     A = (int**) calloc(N_TESTES, sizeof(int*));
@@ -47,17 +54,19 @@ int **geraArrayAleatorio (int tamanho) {
     return A;
 }
 
+// Função 'cabeça' do programa:
 int initSort (int argc, char *argv[]) {
     struct timespec start, end;
     int *elapsed_time;
-    double comparacoesTotais = 0.0;
-    int numeroTrocasTotal = 0, **A, **B, i, j, tamanho, imprimirArray = 0, tmpMedio = 0;
+    double comparacoesTotais = 0.0, nTrocas = 0.0;
+    long numeroTrocasTotal = 0;
+    int **A, **B, i, j, tamanho, imprimirArray = 0, tmpMedio = 0;
     char *tipoOrdenacao;    // QC | QM3 | QPE | QI1 | QI5 | QI10 | QNR
     char *organizacaoVetor; // OrdC | OrdD | Ale
 
-    // Pegando os parâmetros do argv:
-    tipoOrdenacao = (char*) malloc(sizeof(char));
-    organizacaoVetor = (char*) malloc(sizeof(char));
+    // Pegando os argumentos de função do argv:
+    tipoOrdenacao = (char*) malloc(5 * sizeof(char));
+    organizacaoVetor = (char*) malloc(5 * sizeof(char));
     tamanho = atoi(argv[3]);
     strcpy(tipoOrdenacao, argv[1]);
     strcpy(organizacaoVetor, argv[2]);
@@ -69,7 +78,8 @@ int initSort (int argc, char *argv[]) {
     if (strcmp(organizacaoVetor, "OrdD") == 0) { A = geraArrayDecrescente(tamanho); }
     if (strcmp(organizacaoVetor, "Ale") == 0) {  A = geraArrayAleatorio(tamanho); }
 
-    // Printar arrays no final:     
+    // Caso seja necessário imprimir os arrays no final, realizamos 
+    // uma cópia antes da ordenação para que a sua forma original não seja perdida.  
     if (argc == 5 && strcmp(argv[4], "-p") == 0) {
         imprimirArray = 1;
         B = (int**) malloc(N_TESTES * sizeof(int*));
@@ -79,31 +89,30 @@ int initSort (int argc, char *argv[]) {
                 B[i][j] = A[i][j];
             }
         }
-    }
+    } // Extrair para um método de cópia seria uma possível melhoria
 
     // Implementação do calculo de tempo seguindo a documentação disponibilizada no Apendice da descrição do trabalho
-    double nTrocas = 0.0;
     for (i = 0; i < N_TESTES; i++) {
         clock_gettime(CLOCK_REALTIME, &start);
-        
-        comparacoesTotais += QuickSortContainer(A[i], tamanho - 1, tipoOrdenacao, &numeroTrocasTotal)/(double)N_TESTES;
+        comparacoesTotais += QuickSortContainer(A[i], tamanho - 1, tipoOrdenacao, &numeroTrocasTotal)/(double)N_TESTES;        
         nTrocas += numeroTrocasTotal/(double)N_TESTES;
         numeroTrocasTotal = 0;
-        
         clock_gettime(CLOCK_REALTIME, &end);
         elapsed_time[i] = 1.e+6 * (double) (end.tv_sec - start.tv_sec) + 1.e-3 * (double) (end.tv_nsec - start.tv_nsec);
     }
-    numeroTrocasTotal = (long)nTrocas;
     
+    // Ordenando o vetor de tempos de execução para que possamos pegar a mediana do tempo:
+    numeroTrocasTotal = (long)nTrocas;
+    // long aux_nTrocas = (long)nTrocas;
     QuickSortContainer(elapsed_time, N_TESTES, "QC", &nTrocas);
     tmpMedio = (elapsed_time[N_TESTES/2] + elapsed_time[(N_TESTES/2) - 1])/2;
     
     // Impressões de resultados
-    printf("%s ", tipoOrdenacao);   // QC | QM3 | QPE | QI1 | QI5 | QI10 | QNR
+    printf("%s ", tipoOrdenacao);       // QC | QM3 | QPE | QI1 | QI5 | QI10 | QNR
     printf("%s ", organizacaoVetor);    // OrdC | OrdD | Ale
-    printf("%d ", tamanho);     // 50000 | 100000 | 150000 | 200000 | 250000 | 300000 | 350000 | 400000 | 450000 | 500000
+    printf("%d ", tamanho);             // 50000 | 100000 | 150000 | 200000 | 250000 | 300000 | 350000 | 400000 | 450000 | 500000
     printf("%.0lf ", comparacoesTotais);
-    printf("%d ", numeroTrocasTotal);
+    printf("%ld ", numeroTrocasTotal);
     printf("%d\n", tmpMedio);
 
     // Imprimir o vertor utilizado caso tenha entrado com '-p'
@@ -113,7 +122,8 @@ int initSort (int argc, char *argv[]) {
         }
     }
 
-    // Liberar a memória alocada
+    // Liberar a memória alocada 
+    // (Extrair para um método libera seria uma possível melhoria)
     for (i = 0; i < N_TESTES; i++) {
         free(A[i]);
         if (imprimirArray == 1) { free(B[i]); }
