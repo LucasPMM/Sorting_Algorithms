@@ -5,3 +5,5 @@ out.txt
 valgrind-out.txt
 src/teste.sh
 src/out
+graficos_tabelas/*.ipynb
+graficos_tabelas/.ipynb_checkpoints
