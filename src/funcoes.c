@@ -67,7 +67,7 @@ int Particao (int esq, int dir, int *i, int *j, int *A, int tipo, long *numeroTr
 
 			(*i)++;
 			(*j)--;
-			(*numeroTrocas)++;
+			(*numeroTrocas) += 3;
 		}
  	} while (*i <= *j);
 	return numeroComparacoes;

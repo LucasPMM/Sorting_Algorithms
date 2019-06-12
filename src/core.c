@@ -59,7 +59,6 @@ int initSort (int argc, char *argv[]) {
     
     // Ordenando o vetor de tempos de execução para que possamos pegar a mediana do tempo:
     numeroTrocasTotal = (long)nTrocas;
-    // long aux_nTrocas = (long)nTrocas;
     QuickSortContainer(elapsed_time, N_TESTES, "QC", &nTrocas);
     tmpMedio = (elapsed_time[N_TESTES/2] + elapsed_time[(N_TESTES/2) - 1])/2;
     
