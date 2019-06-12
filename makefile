@@ -1,5 +1,5 @@
-all: main.o funcoes.o pilha.o utils.o
-	gcc -O3 funcoes.o utils.o main.o pilha.o -o sort
+all: main.o funcoes.o pilha.o utils.o core.o
+	gcc -O3 funcoes.o utils.o main.o pilha.o core.o -o sort
 	make clean
 	clear
 
@@ -11,6 +11,9 @@ pilha.o: src/pilha.c src/includes/pilha.h
 
 utils.o: src/utils.c src/includes/utils.h
 	gcc -O3 -c src/utils.c
+
+core.o: src/core.c src/includes/core.h
+	gcc -O3 -c src/core.c
 
 main.o: src/main.c
 	gcc -O3 -c src/main.c

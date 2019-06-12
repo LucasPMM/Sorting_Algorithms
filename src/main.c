@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <time.h>
-#include "includes/utils.h"
+#include "includes/core.h"
 
 int main(int argc, char const *argv[]){
     srand(time(NULL));
