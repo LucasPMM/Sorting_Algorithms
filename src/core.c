@@ -50,7 +50,11 @@ int initSort (int argc, char *argv[]) {
     // Implementação do calculo de tempo seguindo a documentação disponibilizada no Apendice da descrição do trabalho
     for (i = 0; i < N_TESTES; i++) {
         clock_gettime(CLOCK_REALTIME, &start);
-        comparacoesTotais += QuickSortContainer(A[i], tamanho - 1, tipoOrdenacao, &numeroTrocasTotal)/(double)N_TESTES;        
+
+        // Type casting necessário para retirar o warning de estar dividindo um long por um inteiro e estar atribuindo a uma variável double
+        comparacoesTotais += QuickSortContainer(A[i], tamanho - 1, tipoOrdenacao, &numeroTrocasTotal)/(double)N_TESTES;
+
+        // Type casting necessário para que o resultado da função possa ser atribuido a uma variavel double
         nTrocas += numeroTrocasTotal/(double)N_TESTES;
         numeroTrocasTotal = 0;
         clock_gettime(CLOCK_REALTIME, &end);
@@ -58,6 +62,8 @@ int initSort (int argc, char *argv[]) {
     }
     
     // Ordenando o vetor de tempos de execução para que possamos pegar a mediana do tempo:
+    // O type casting nesse caso é extremamente necessário devido ao fato de que o double
+    // excede o limite do long, fazendo com que a saida possua números negativos.
     numeroTrocasTotal = (long)nTrocas;
     QuickSortContainer(elapsed_time, N_TESTES, "QC", &nTrocas);
     tmpMedio = (elapsed_time[N_TESTES/2] + elapsed_time[(N_TESTES/2) - 1])/2;
